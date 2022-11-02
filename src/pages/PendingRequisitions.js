@@ -68,7 +68,7 @@ export default function PendingRequisitions(){
                     <td>{order.id}</td>
                     <td>{order.data['SiteManager']}</td>
                     <td>{total}</td>
-                    <td>@mdo</td>
+                    <td>{order.data.Products[0].supplier}</td>
                     <td><button className="btn btn-link" onClick={()=> navigateToOrder(order)}>View</button></td>
                   </tr>
                   )}
