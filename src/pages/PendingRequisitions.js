@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Col, Table} from "react-bootstrap";
+import { Table} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import SideNavBar from "../components/SideNavbar";
@@ -9,16 +9,24 @@ export default function PendingRequisitions(){
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    getOrders().then(orderList => {
+    getOrders().then(ordersSnapshot => {
+      const orderList = ordersSnapshot.docs.map(doc => ({id:doc.id, data:doc.data()}));
       setOrders(orderList);
       console.log(orderList);
     });
+
+    
   }, []);
 
   const navigate = useNavigate();
 
-  function navigateToOrder(){
-    navigate('/order');
+  function navigateToOrder(order){
+    navigate('/order', {
+      state: {
+        order: order
+      }
+    }
+    );
   }
 
   return(
@@ -39,20 +47,20 @@ export default function PendingRequisitions(){
                 </tr>
               </thead>
               <tbody>
-                 {orders.map(order => { 
+                {orders.map(order => { 
                   let total = 0;
-                  let products = order.Products;
-                  Object.keys(products).map((key, i) => { 
-                    let price = products[key]['price'];
-                    total += price;
-                    })
+                  let products = order.data.Products;
+                  for(let product of products){
+                    let price = product.price;
+                    total += parseFloat(price)*parseInt(product.quantity);
+                  }
                   return (
-                  <tr key={orders.indexOf(order)}>
+                  <tr key={order.id}>
                     <td>{order.id}</td>
-                    <td>{order['Site Manager']}</td>
+                    <td>{order.data['SiteManager']}</td>
                     <td>{total}</td>
                     <td>@mdo</td>
-                    <td><button className="btn btn-primary" onClick={navigateToOrder}>View</button></td>
+                    <td><button className="btn btn-link" onClick={()=> navigateToOrder(order)}>View</button></td>
                   </tr>
                   )}
                 )}
