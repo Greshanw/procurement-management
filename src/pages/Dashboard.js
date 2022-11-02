@@ -1,16 +1,27 @@
-import { Col, Container } from "react-bootstrap";
+import { Col} from "react-bootstrap";
 import Navbar from "../components/Navbar";
-import SideNavBar from "../components/SideNavbar";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function dashboard(){
+export default function Dashboard(){
+    const [user, loading, error] = useAuthState(auth);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (loading) return;
+        if (!user) return navigate("/login");
+    })
+
     return(
         <>
             <Navbar/>
-            <div className="row">
-                <SideNavBar/>
-                <div className="col-9">
-                    <h2>Dashboard</h2>
-                    <Col style={{width: '500px'}}>
+            <div className="row m-5">
+                <div className="col">
+                    <h2 className="mb-5">Dashboard</h2>
+                    <Col>
                         <a href="/pending-requisitions" className="text-decoration-none text-white fw-bold">
                             <div className="border rounded p-4 m-3 bg-info fs-4">
                                 <i className="bi bi-hourglass-bottom mx-2 text-dark"></i>Pending Requistion

@@ -1,22 +1,32 @@
 import { useEffect, useState } from "react";
 import { Table} from "react-bootstrap";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import SideNavBar from "../components/SideNavbar";
+import { auth } from "../firebase";
 import { getOrders } from "../services/orders";
 
 export default function PendingRequisitions(){
+  const [user, loading, error] = useAuthState(auth);
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
+    if (loading) return;
+    if (!user) return navigate("/login");
     getOrders().then(ordersSnapshot => {
       const orderList = ordersSnapshot.docs.map(doc => ({id:doc.id, data:doc.data()}));
-      setOrders(orderList);
-      console.log(orderList);
-    });
+      let pending = [];
 
-    
-  }, []);
+      for (const order of orderList) {
+        if(order.data.isApproved === undefined){
+          pending.push(order);
+        }
+      }
+
+      setOrders(pending);
+    });
+  
+  }, [loading, user]);
 
   const navigate = useNavigate();
 
@@ -32,12 +42,11 @@ export default function PendingRequisitions(){
   return(
     <>
         <Navbar/>
-        <div className="row">
-          <SideNavBar/>
-          <div className="col-9">
-            <h2>Pending Requisitions</h2>
+        <div className="row m-5">
+          <div className="col">
+            <h2 className="mb-5">Pending Requisitions</h2>
             <Table striped bordered hover>
-              <thead>
+              <thead className="bg-primary text-white">
                 <tr>
                   <th>Buyer ID</th>
                   <th>Site Manager</th>

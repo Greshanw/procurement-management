@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Table} from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { Button, Modal, Table} from "react-bootstrap";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import SideNavBar from "../components/SideNavbar";
+import { auth } from "../firebase";
 import { updateOrders } from "../services/orders";
 
+
 export default function Order(){
+  const [user, loading, error] = useAuthState(auth);
   const [products, setProducts] = useState([]);
   const [buyerId, setBuyerId] = useState("");
   const [siteMgr, setSiteMgr] = useState("");
@@ -14,7 +17,21 @@ export default function Order(){
   const [supplier, setSupplier] = useState("");
   const location = useLocation();
 
+  const [show, setShow] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    setShow(false);
+    navigate(-1);
+  };
+  const handleShow = () => setShow(true);
+
+  const [status, setStatus] = useState("Approved");
+
   useEffect(() => {
+    if (loading) return;
+    if (!user) return navigate("/login");
     let productsArray = [];
     let productList = location.state.order.data.Products;
     setBuyerId(location.state.order.id)
@@ -39,6 +56,8 @@ export default function Order(){
     }
 
     updateOrders(location.state.order.id, data);
+    setStatus("Approved!!")
+    handleShow();
   }
 
   function declineOrder(){
@@ -47,15 +66,25 @@ export default function Order(){
     }
 
     updateOrders(location.state.order.id, data);
+    setStatus("Declined!!")
+    handleShow();
   }
 
   return(
     <>
         <Navbar/>
-        <div className="row">
-          <SideNavBar/>
-          <div className="col-9">
-            <h2>View Order</h2>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Body>The Requisition has been {status}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <div className="row m-5">
+          <div className="col">
+            <h2 className="mb-5">View Order</h2>
             <div className="row">
               <div className="col">
                 <div className="row">
@@ -78,7 +107,7 @@ export default function Order(){
               </div>
               <div className="col">
                 <Table striped bordered hover>
-                  <thead>
+                  <thead className="bg-primary text-white">
                     <tr>
                       <th>Product</th>
                       <th>Quantity</th>
@@ -99,9 +128,9 @@ export default function Order(){
                 </Table>
               </div>
             </div>
-            <div className="row">
-              <button onClick={acceptOrder} type="button" className="btn btn-success col my-2 mx-5">Accept</button>
-              <button onClick={declineOrder} type="button" className="btn btn-danger col my-2 mx-5">Decline</button>
+            <div className="row mx-auto" style={{width: '500px'}}>
+              <button onClick={acceptOrder} type="button" className="btn btn-success my-2 mx-5"  style={{width: '120px'}}>Accept</button>
+              <button onClick={declineOrder} type="button" className="btn btn-danger my-2 mx-5"  style={{width: '120px'}}>Decline</button>
             </div>
           </div>               
         </div>
