@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase'
+import { auth } from '../config/firebase'
 
 async function logInWithEmailAndPassword(email, password){
   try{

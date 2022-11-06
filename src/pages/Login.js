@@ -24,9 +24,10 @@ export default function Login(){
                 <Navbar.Brand className="fw-bold text-white" href="#home">Login</Navbar.Brand>
             </Container>
             </Navbar>
-            <Card className="w-75 mx-auto my-5">
+            <Card className="mx-auto my-5" style={{width: '500px'}}>
                 <Card.Body>
-                    <Form className="w-50 mx-auto my-5">
+                    <Form className="mx-auto my-5">
+                        <img alt="login" className="col mx-auto d-block" src="/logo.png" style={{width: '250px'}}/>
                         <Form.Group className="m-3">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="text" 

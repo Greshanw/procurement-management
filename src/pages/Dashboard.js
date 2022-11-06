@@ -1,7 +1,7 @@
 import { Col} from "react-bootstrap";
 import Navbar from "../components/Navbar";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { auth } from "../config/firebase";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 

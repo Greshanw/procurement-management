@@ -3,7 +3,7 @@ import { Button, Modal, Table} from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { auth } from "../firebase";
+import { auth } from "../config/firebase";
 import { updateOrders } from "../services/orders";
 
 
@@ -48,7 +48,7 @@ export default function Order(){
     setSite(location.state.order.data['Location']);
     setTotal(tot);
     setSupplier(productsArray[0].supplier);
-  }, [location.state.order.data, location.state.order.id]);
+  }, [loading, location.state.order.data, location.state.order.id, navigate, user]);
 
   function acceptOrder(){
     let data = {
@@ -87,8 +87,8 @@ export default function Order(){
             <h2 className="mb-5">View Order</h2>
             <div className="row">
               <div className="col">
-                <div className="row">
-                  <div className="col">
+                <div className="row" style={{width: '500px'}}>
+                  <div className="col bold">
                     <p>Buyer Id</p>
                     <p>Site Manager</p>
                     <p>Site</p>
@@ -99,14 +99,14 @@ export default function Order(){
                     <p>- {buyerId}</p>
                     <p>- {siteMgr}</p>
                     <p>- {site}</p>
-                    <p>- {total}</p>
+                    <p>- Rs.{total}.00</p>
                     <p>- {supplier}</p>
                   </div>
                   
                 </div>
               </div>
               <div className="col">
-                <Table striped bordered hover>
+                <Table striped bordered hover className="border border-primary">
                   <thead className="bg-primary text-white">
                     <tr>
                       <th>Product</th>
@@ -120,7 +120,7 @@ export default function Order(){
                       <tr key={products.indexOf(order)}>
                         <td>{order.name}</td>
                         <td>{order.quantity}</td>
-                        <td>{order.price}</td>
+                        <td>Rs.{order.price}.00</td>
                       </tr>
                       )}
                     )}

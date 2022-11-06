@@ -3,7 +3,7 @@ import { Table} from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { auth } from "../firebase";
+import { auth } from "../config/firebase";
 import { getOrders } from "../services/orders";
 
 export default function PendingRequisitions(){
@@ -45,7 +45,7 @@ export default function PendingRequisitions(){
         <div className="row m-5">
           <div className="col">
             <h2 className="mb-5">Pending Requisitions</h2>
-            <Table striped bordered hover>
+            <Table striped bordered hover className="border border-primary">
               <thead className="bg-primary text-white">
                 <tr>
                   <th>Buyer ID</th>
@@ -75,7 +75,7 @@ export default function PendingRequisitions(){
                 )}
               </tbody>
             </Table>
-          </div>               
+          </div>
         </div>
     </>
   )
